@@ -7,6 +7,16 @@ using namespace std;
 
 // функция, которая считывает данные из файла txt
 
+// класс объектов, которые были получены из файла
+class Obj
+{
+private:
+    string name;
+    int x;
+    int y;
+    string type;
+    double time;
+};
 
 int main() 
 {
@@ -20,6 +30,9 @@ int main()
     while (getline(fin, str))
     {
         cout << str << endl;
+        // разделение информации
+        Obj data = 
+
     }
     fin.close();
     
