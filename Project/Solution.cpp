@@ -44,11 +44,7 @@ public:
 
     void print()
     {
-        cout << name << endl;
-        cout << x << endl;
-        cout << y << endl;
-        cout << type << endl;
-        cout << time << endl;
+        cout << name << " " << x << " " << y << " " << type << " " << time << endl;
     }
 
 private:
@@ -85,27 +81,78 @@ void splittingWord(string& str, Obj& data)
     }
 }
 
+void readInfo(list <Obj>& list_Obj)
+{
+    for (Obj v : list_Obj)
+        v.print();
+}
+
+void start_Menu()
+{
+    cout << "Здравствуйте! Введите номер интересующей Вас команды:" << endl;
+    cout << "1. Вывести список объектов, содержащийхся в файле." << endl;
+    cout << "2. Добавить объект в список." << endl;
+    cout << "3. Группировать объекты с сортировкой внутри групп (?)." << endl;
+    cout << "4. Сохранить результаты в файл." << endl;
+    cout << "5. Выйти." << endl;
+}
+
 int main() 
 {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
     string str;
+    string str_user;
     ifstream fin;
+    ofstream out;
     Obj data;
+    int number = 0;
 
     list <Obj> list_Obj;
+    list <Obj> ::iterator it;
+
+    start_Menu();
     
+    // считалb все данные с файла, которые были и поместила в лист
     fin.open("input.txt");
     while (getline(fin, str))
     {
-        cout << str << endl;
         // разделение информации и помещение в список
         splittingWord(str, data);
-        // data.print();
         list_Obj.push_back(data);
     }
     fin.close();
+    
+    while (number != 5)
+    {
+        cin >> number;
+
+        switch (number)
+        {
+        case 1:
+            readInfo(list_Obj);
+            break;
+        case 2:
+            cout << "Введите в формате имя_x_y_тип_время данные" << endl;
+            cin >> str_user;
+            splittingWord(str_user, data);
+            list_Obj.push_back(data);
+            out.open("input.txt");
+            if (out.is_open())
+            {
+                out << str_user << std::endl;
+            }
+            out.close();
+
+        case 5:
+            break;
+        default:
+            cout << "Такой команды не существует!";
+            break;
+
+        }
+    }
     
     return 0;
 }
