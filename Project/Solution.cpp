@@ -25,13 +25,14 @@ int main()
 
     string str;
     ifstream fin;
+    Obj data; 
     
     fin.open("input.txt");
     while (getline(fin, str))
     {
         cout << str << endl;
         // разделение информации
-        Obj data = 
+        
 
     }
     fin.close();
