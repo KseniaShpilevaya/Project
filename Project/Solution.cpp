@@ -33,7 +33,8 @@ public:
                     type = word;
                     break;
                 case 4:
-                    time = stod(word);
+                    t = stod(word);
+                    t_s = word;
                     break;
                 default:
                     cout << "Столбца с таким номером не существует" << endl;
@@ -44,29 +45,31 @@ public:
 
     void print()
     {
-        cout << name << " " << x << " " << y << " " << type << " " << time << endl;
+        cout << name << " " << x << " " << y << " " << type << " " << t_s << endl;
     }
 
 private:
     string name;
-    double x;
-    double y;
+    double x = 0;
+    double y = 0;
     string type;
-    double time;
+    double t = 0;
+    string t_s;
 };
 
 // функция, которая разбивает строку на слова, и делает из набора информации объект
 void splittingWord(string& str, Obj& data)
 {
     int first_space;
+    int i;
 
     first_space = str.find(" ");
     string word = "";
 
-    // данные разбиты по стобцам, пусть имя - это стобец 0, координата x - столбец 1 и т.д.
+    // данные разбиты по столбцам, пусть имя - это столбец 0, координата x - столбец 1 и т.д.
     int k = 0;
     
-    for (int i = 0; i < str.size(); i++)
+    for (i = 0; i < str.size(); i++)
     {
         if (str[i] == str[first_space])
         {
@@ -78,6 +81,10 @@ void splittingWord(string& str, Obj& data)
         {
             word = word + str[i];
         }
+    }
+    if (i == str.size())
+    {
+        data.add(word, k);
     }
 }
 
@@ -91,17 +98,16 @@ void start_Menu(int& number)
 {
     if (number == 0)
     {
-        cout << endl;
         cout << "Здравствуйте! Введите номер интересующей Вас команды:" << endl;
         cout << "1. Вывести список объектов, содержащихся в файле." << endl;
         cout << "2. Добавить объект в список." << endl;
         cout << "3. Группировать объекты с сортировкой внутри групп (?)." << endl;
         cout << "4. Сохранить результаты в файл." << endl;
         cout << "5. Выйти." << endl;
+
     }
     else
     {
-        cout << endl;
         cout << "Введите номер интересующей Вас команды:" << endl;
         cout << "1. Вывести список объектов, содержащихся в файле." << endl;
         cout << "2. Добавить объект в список." << endl;
@@ -140,12 +146,16 @@ int main()
     
     // считала все данные с файла, которые были и поместила в лист
     // почему не  в функции - потому что мы каждый раз будем при вызове открывать файл и считывать, что породить дубликаты
+    
     fin.open("input.txt");
     while (getline(fin, str))
     {
-        // разделение информации и помещение в список
-        splittingWord(str, data);
-        list_Obj.push_back(data);
+        if (str != "")
+        {
+            // разделение информации и помещение в список
+            splittingWord(str, data);
+            list_Obj.push_back(data);
+        }
     }
     fin.close();
 
@@ -156,7 +166,8 @@ int main()
         switch (number)
         {
         case 1:
-            readInfo(list_Obj);
+            if (list_Obj.empty()) cout << "Список пуст." << endl;
+            else readInfo(list_Obj);
             break;
         case 2:
             menuTwo(num_change);
@@ -172,7 +183,7 @@ int main()
                 list_Obj.push_back(data_user);
                 
                 out.open("input.txt", std::ios_base::app);
-                out << str_user << std::endl;
+                out << str_user << endl;
                 out.close();
 
                 menuTwo(num_change);
