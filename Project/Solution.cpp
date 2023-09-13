@@ -87,14 +87,37 @@ void readInfo(list <Obj>& list_Obj)
         v.print();
 }
 
-void start_Menu()
+void start_Menu(int& number)
 {
-    cout << "Здравствуйте! Введите номер интересующей Вас команды:" << endl;
-    cout << "1. Вывести список объектов, содержащийхся в файле." << endl;
-    cout << "2. Добавить объект в список." << endl;
-    cout << "3. Группировать объекты с сортировкой внутри групп (?)." << endl;
-    cout << "4. Сохранить результаты в файл." << endl;
-    cout << "5. Выйти." << endl;
+    if (number == 0)
+    {
+        cout << endl;
+        cout << "Здравствуйте! Введите номер интересующей Вас команды:" << endl;
+        cout << "1. Вывести список объектов, содержащихся в файле." << endl;
+        cout << "2. Добавить объект в список." << endl;
+        cout << "3. Группировать объекты с сортировкой внутри групп (?)." << endl;
+        cout << "4. Сохранить результаты в файл." << endl;
+        cout << "5. Выйти." << endl;
+    }
+    else
+    {
+        cout << endl;
+        cout << "Введите номер интересующей Вас команды:" << endl;
+        cout << "1. Вывести список объектов, содержащихся в файле." << endl;
+        cout << "2. Добавить объект в список." << endl;
+        cout << "3. Группировать объекты с сортировкой внутри групп (?)." << endl;
+        cout << "4. Сохранить результаты в файл." << endl;
+        cout << "5. Выйти." << endl;
+    }
+    cin >> number;
+}
+
+void menuTwo(int& n)
+{
+    cout << "Добавить объект в файл?" << endl;
+    cout << "1. Да" << endl;
+    cout << "2. Выход." << endl;
+    cin >> n;
 }
 
 int main() 
@@ -102,19 +125,21 @@ int main()
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
-    string str;
-    string str_user;
+    string str = "";
+    string str_user = "";
     ifstream fin;
     ofstream out;
+
     Obj data;
+    Obj data_user;
+    
     int number = 0;
+    int num_change = 0;
 
     list <Obj> list_Obj;
-    list <Obj> ::iterator it;
-
-    start_Menu();
     
-    // считалb все данные с файла, которые были и поместила в лист
+    // считала все данные с файла, которые были и поместила в лист
+    // почему не  в функции - потому что мы каждый раз будем при вызове открывать файл и считывать, что породить дубликаты
     fin.open("input.txt");
     while (getline(fin, str))
     {
@@ -123,10 +148,10 @@ int main()
         list_Obj.push_back(data);
     }
     fin.close();
-    
+
     while (number != 5)
     {
-        cin >> number;
+        start_Menu(number);
 
         switch (number)
         {
@@ -134,17 +159,29 @@ int main()
             readInfo(list_Obj);
             break;
         case 2:
-            cout << "Введите в формате имя_x_y_тип_время данные" << endl;
-            cin >> str_user;
-            splittingWord(str_user, data);
-            list_Obj.push_back(data);
-            out.open("input.txt");
-            if (out.is_open())
-            {
-                out << str_user << std::endl;
-            }
-            out.close();
+            menuTwo(num_change);
 
+            while (num_change == 1)
+            {
+                cin.ignore(); // удаление символа из потока
+                cout << "Введите в формате 'имя x y тип время' данные: " << endl;
+
+                getline(cin, str_user);
+                
+                splittingWord(str_user, data_user);
+                list_Obj.push_back(data_user);
+                
+                out.open("input.txt", std::ios_base::app);
+                out << str_user << std::endl;
+                out.close();
+
+                menuTwo(num_change);
+            }
+            if ((num_change != 2) && (num_change != 1))
+            {
+                cout << "Была введена неверная команда!" << endl;
+            }
+            break;
         case 5:
             break;
         default:
@@ -153,6 +190,5 @@ int main()
 
         }
     }
-    
     return 0;
 }
