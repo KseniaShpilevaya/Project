@@ -3,6 +3,7 @@
 #include <string>
 #include <Windows.h>
 #include <list>
+#include <set>
 
 using namespace std;
 
@@ -46,6 +47,16 @@ public:
     void print()
     {
         cout << name << " " << x << " " << y << " " << type << " " << t_s << endl;
+    }
+
+    char get_group_name()
+    {
+        return name[0];
+    }
+
+    string get_name()
+    {
+        return name;
     }
 
 private:
@@ -101,9 +112,8 @@ void start_Menu(int& number)
         cout << "Здравствуйте! Введите номер интересующей Вас команды:" << endl;
         cout << "1. Вывести список объектов, содержащихся в файле." << endl;
         cout << "2. Добавить объект в список." << endl;
-        cout << "3. Группировать объекты с сортировкой внутри групп (?)." << endl;
-        cout << "4. Сохранить результаты в файл." << endl;
-        cout << "5. Выйти." << endl;
+        cout << "3. Группировать объекты по имени." << endl;
+        cout << "4. Выйти." << endl;
 
     }
     else
@@ -111,9 +121,8 @@ void start_Menu(int& number)
         cout << "Введите номер интересующей Вас команды:" << endl;
         cout << "1. Вывести список объектов, содержащихся в файле." << endl;
         cout << "2. Добавить объект в список." << endl;
-        cout << "3. Группировать объекты с сортировкой внутри групп (?)." << endl;
-        cout << "4. Сохранить результаты в файл." << endl;
-        cout << "5. Выйти." << endl;
+        cout << "3. Группировать объекты по имени." << endl;
+        cout << "4. Выйти." << endl;
     }
     cin >> number;
 }
@@ -124,6 +133,46 @@ void menuTwo(int& n)
     cout << "1. Да" << endl;
     cout << "2. Выход." << endl;
     cin >> n;
+}
+
+void menuThree(char& n)
+{
+    cout << "Какую группу вы хотите увидеть? (А - слова, начинающиеся на А, Б - слова, начинающиеся на Б,... # - иное)" << endl;
+    cout << "Напечатайте цифру 2, если хотите выйти." << endl;
+    cin >> n;
+}
+
+void group_name(list<Obj>& list_Obj, char& l, string& _A, int& n)
+{
+    set<string> name_set;
+
+    if (n == 1)
+    {
+        for (Obj v : list_Obj)
+        {
+            if ((l == v.get_group_name()) && (v.get_group_name() >= _A[0]) && (v.get_group_name() <= _A[1]))
+                name_set.insert(v.get_name());
+            else if ((l == _A[2]) && !((v.get_group_name() >= _A[0]) && (v.get_group_name() <= _A[1])))
+                name_set.insert(v.get_name());
+        }
+        for (string n : name_set)
+            for (Obj v : list_Obj)
+                if (n == v.get_name()) v.print();
+    }
+    else if (n == 2)
+    {
+        for (Obj v : list_Obj)
+        {
+            if ((l == v.get_group_name()) && (v.get_group_name() >= _A[0]) && (v.get_group_name() <= _A[1]))
+                v.print();
+            else if ((l == _A[2]) && !((v.get_group_name() >= _A[0]) && (v.get_group_name() <= _A[1])))
+                v.print();
+        }
+    }
+    else
+    {
+        cout << "Введена неправильная команда!" << endl;
+    }
 }
 
 int main() 
@@ -141,6 +190,7 @@ int main()
     
     int number = 0;
     int num_change = 0;
+    string _A = "АЯ#";
 
     list <Obj> list_Obj;
     
@@ -159,7 +209,7 @@ int main()
     }
     fin.close();
 
-    while (number != 5)
+    while (number != 4)
     {
         start_Menu(number);
 
@@ -193,7 +243,31 @@ int main()
                 cout << "Была введена неверная команда!" << endl;
             }
             break;
-        case 5:
+        case 3:
+            char letter;
+            int num_change1;
+            if (list_Obj.empty())
+            {
+                cout << "Список пуст. Невозможно совершить группировку." << endl;
+            }
+            else
+            {
+                menuThree(letter);
+
+                while ((letter != 2) && ((letter >= _A[0]) && (letter <= _A[1])) || (letter == _A[2]))
+                {
+                    cout << "Хотите отсортировать список в алфавитном порядке?" << endl;
+                    cout << "1. Да." << endl;
+                    cout << "2 .Нет." << endl;
+                    cin >> num_change1;
+                    group_name(list_Obj, letter, _A, num_change1);
+                    menuThree(letter);
+                }
+                if (letter != 2) cout << "Такой группы не может существовать." << endl;
+                break;
+            }
+            break;
+        case 4:
             break;
         default:
             cout << "Такой команды не существует!";
