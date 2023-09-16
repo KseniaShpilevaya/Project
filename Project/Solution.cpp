@@ -5,6 +5,7 @@
 #include <list>
 #include <set>
 #include <math.h>
+#include <map>
 
 using namespace std;
 
@@ -65,6 +66,11 @@ public:
         return sqrt(pow(x,2) + pow(y,2));
     }
 
+    string get_type()
+    {
+        return type;
+    }
+
 private:
     string name;
     double x = 0;
@@ -120,8 +126,7 @@ void startMenu(int& number)
         cout << "2. Добавить объект в список." << endl;
         cout << "3. Группировать объекты по имени." << endl;
         cout << "4. Группировать объекты по расстоянию." << endl;
-        cout << "5. Группировать объекты по типу." << endl;
-        cout << "6. Выйти." << endl;
+        cout << "5. Выйти." << endl;
 
     }
     else
@@ -131,8 +136,7 @@ void startMenu(int& number)
         cout << "2. Добавить объект в список." << endl;
         cout << "3. Группировать объекты по имени." << endl;
         cout << "4. Группировать объекты по расстоянию." << endl;
-        cout << "5. Группировать объекты по типу." << endl;
-        cout << "6. Выйти." << endl;
+        cout << "5. Выйти." << endl;
     }
     cin >> number;
 }
@@ -160,6 +164,13 @@ void menuFour(int& n)
     cout << "3. До 10000 единиц." << endl;
     cout << "4. Слишком далеко." << endl;
     cout << "5. Выйти." << endl;
+    cin >> n;
+}
+
+void menuFive(int& n)
+{
+    cout << "Введите N (натуральное число) - количество объектов определенного типа." << endl;
+    cout << "Напечатайте -1, если хотите выйти." << endl;
     cin >> n;
 }
 
@@ -249,6 +260,31 @@ void groupDistance(list<Obj>& list_Obj, int& num_change2, int& num_change22)
     }       
 }
 
+/*void groupType(list<Obj>& list_Obj, int& number, int& num_change3)
+{
+    map <string, Obj> mp;
+    string t, name;
+    for (Obj v : list_Obj)
+        mp.insert(pair<string, Obj>(v.get_type(), v));
+    cout << mp.count("Дерево");
+    if (num_change3 == 1)
+    {
+
+    }
+    else if (num_change3 == 2)
+    {
+        for (const auto& it : mp)
+        {
+            if (mp.count(it.first) > number)
+                mp[it.first].print();
+        }
+    }
+    else
+    {
+        cout << "Введена неправильная команда!" << endl;
+    }
+} */
+
 int main() 
 {
     SetConsoleCP(1251);
@@ -283,7 +319,7 @@ int main()
     }
     fin.close();
 
-    while (number != 6)
+    while (number != 5)
     {
         startMenu(number);
 
@@ -365,7 +401,7 @@ int main()
                 break;
             }
             break;
-        case 6:
+        case 5:
             break;
         default:
             cout << "Такой команды не существует!";
