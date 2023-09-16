@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <list>
 #include <set>
+#include <math.h>
 
 using namespace std;
 
@@ -59,6 +60,11 @@ public:
         return name;
     }
 
+    double get_distance()
+    {
+        return sqrt(pow(x,2) + pow(y,2));
+    }
+
 private:
     string name;
     double x = 0;
@@ -105,7 +111,7 @@ void readInfo(list <Obj>& list_Obj)
         v.print();
 }
 
-void start_Menu(int& number)
+void startMenu(int& number)
 {
     if (number == 0)
     {
@@ -113,7 +119,9 @@ void start_Menu(int& number)
         cout << "1. Вывести список объектов, содержащихся в файле." << endl;
         cout << "2. Добавить объект в список." << endl;
         cout << "3. Группировать объекты по имени." << endl;
-        cout << "4. Выйти." << endl;
+        cout << "4. Группировать объекты по расстоянию." << endl;
+        cout << "5. Группировать объекты по типу." << endl;
+        cout << "6. Выйти." << endl;
 
     }
     else
@@ -122,7 +130,9 @@ void start_Menu(int& number)
         cout << "1. Вывести список объектов, содержащихся в файле." << endl;
         cout << "2. Добавить объект в список." << endl;
         cout << "3. Группировать объекты по имени." << endl;
-        cout << "4. Выйти." << endl;
+        cout << "4. Группировать объекты по расстоянию." << endl;
+        cout << "5. Группировать объекты по типу." << endl;
+        cout << "6. Выйти." << endl;
     }
     cin >> number;
 }
@@ -142,7 +152,18 @@ void menuThree(char& n)
     cin >> n;
 }
 
-void group_name(list<Obj>& list_Obj, char& l, string& _A, int& n)
+void menuFour(int& n)
+{
+    cout << "Какую группу вы хотите увидеть? (Оценивается дальность от центра координат, т.е. x = 0, y = 0)" << endl;
+    cout << "1. До 100 единиц." << endl;
+    cout << "2. До 1000 единиц." << endl;
+    cout << "3. До 10000 единиц." << endl;
+    cout << "4. Слишком далеко." << endl;
+    cout << "5. Выйти." << endl;
+    cin >> n;
+}
+
+void groupName(list<Obj>& list_Obj, char& l, string& _A, int& n)
 {
     set<string> name_set;
 
@@ -173,6 +194,59 @@ void group_name(list<Obj>& list_Obj, char& l, string& _A, int& n)
     {
         cout << "Введена неправильная команда!" << endl;
     }
+}
+
+void groupDistance(list<Obj>& list_Obj, int& num_change2, int& num_change22)
+{
+    set<double> numbers;
+    if (num_change22 == 1)
+    {
+        for (Obj v : list_Obj)
+        {
+            numbers.insert(v.get_distance());
+        }
+       for (double n : numbers)
+            for (Obj v : list_Obj)
+                if (v.get_distance() == n)
+                    switch (num_change2)
+                    {
+                    case 1:
+                        if (v.get_distance() < 100) v.print();
+                        break;
+                    case 2:
+                        if (v.get_distance() < 1000) v.print();
+                        break;
+                    case 3:
+                        if (v.get_distance() < 10000) v.print();
+                        break;
+                    case 4: 
+                        if (v.get_distance() >= 10000) v.print();
+                        break;
+                    }
+    }
+    else if (num_change22 == 2)
+    {
+        for (Obj v : list_Obj)
+            switch (num_change2)
+            {
+                case 1:
+                    if (v.get_distance() < 100) v.print();
+                    break;
+                case 2:
+                    if (v.get_distance() < 1000) v.print();
+                    break;
+                case 3: 
+                    if (v.get_distance() < 10000) v.print();
+                    break;
+                case 4: 
+                    if (v.get_distance() >= 10000) v.print();
+                    break;
+            }
+    }
+    else
+    {
+        cout << "Введена неправильная команда!" << endl;
+    }       
 }
 
 int main() 
@@ -209,9 +283,9 @@ int main()
     }
     fin.close();
 
-    while (number != 4)
+    while (number != 6)
     {
-        start_Menu(number);
+        startMenu(number);
 
         switch (number)
         {
@@ -260,7 +334,7 @@ int main()
                     cout << "1. Да." << endl;
                     cout << "2 .Нет." << endl;
                     cin >> num_change1;
-                    group_name(list_Obj, letter, _A, num_change1);
+                    groupName(list_Obj, letter, _A, num_change1);
                     menuThree(letter);
                 }
                 if (letter != 2) cout << "Такой группы не может существовать." << endl;
@@ -268,6 +342,30 @@ int main()
             }
             break;
         case 4:
+            if (list_Obj.empty())
+            {
+                cout << "Список пуст. Невозможно совершить группировку." << endl;
+            }
+            else
+            {
+                int num_change2;
+                int num_change22;
+                menuFour(num_change2);
+
+                while (num_change2 != 5)
+                {
+                    cout << "Хотите отсортировать данные?" << endl;
+                    cout << "1. Да." << endl;
+                    cout << "2 .Нет." << endl;
+                    cin >> num_change22;
+                    groupDistance(list_Obj, num_change2, num_change22);
+                    menuFour(num_change2);
+                }
+                if (num_change2 != 5) cout << "Такой группы не может существовать." << endl;
+                break;
+            }
+            break;
+        case 6:
             break;
         default:
             cout << "Такой команды не существует!";
